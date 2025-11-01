@@ -208,7 +208,7 @@ function App() {
     },
     {
       title: "Web Development Student",
-      company: "SMK Negeri 1 Denpasar",
+      company: "SMK",
       period: "2023 - Present",
       description: "Learning software engineering principles, web development, database management, and object-oriented programming. Active in school projects and competitions.",
       type: "education"
@@ -294,44 +294,99 @@ function App() {
   if (isLoading) {
     return (
       <div className="fixed inset-0 bg-gradient-to-br from-gray-900 via-blue-900/20 to-purple-900/20 flex items-center justify-center z-50 overflow-hidden">
-        {/* Animated Stars Background */}
+        {/* Animated Particles Background */}
         <div className="absolute inset-0">
-          {[...Array(50)].map((_, i) => (
+          {/* Stars */}
+          {[...Array(100)].map((_, i) => (
             <div
-              key={i}
-              className="absolute w-1 h-1 bg-white rounded-full animate-twinkle"
+              key={`star-${i}`}
+              className="absolute rounded-full animate-twinkle"
               style={{
                 left: `${Math.random() * 100}%`,
                 top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${2 + Math.random() * 2}s`
+                width: `${Math.random() * 3 + 1}px`,
+                height: `${Math.random() * 3 + 1}px`,
+                backgroundColor: i % 3 === 0 ? '#60a5fa' : i % 3 === 1 ? '#a78bfa' : '#ffffff',
+                animationDelay: `${Math.random() * 3}s`,
+                animationDuration: `${2 + Math.random() * 3}s`,
+                boxShadow: `0 0 ${Math.random() * 10 + 5}px currentColor`
+              }}
+            />
+          ))}
+          
+          {/* Floating Orbs */}
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={`orb-${i}`}
+              className="absolute rounded-full animate-float-slow opacity-20 blur-xl"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                width: `${Math.random() * 200 + 100}px`,
+                height: `${Math.random() * 200 + 100}px`,
+                background: i % 2 === 0 
+                  ? 'radial-gradient(circle, rgba(59, 130, 246, 0.4), transparent)' 
+                  : 'radial-gradient(circle, rgba(147, 51, 234, 0.4), transparent)',
+                animationDelay: `${i * 0.5}s`,
+                animationDuration: `${5 + Math.random() * 5}s`
               }}
             />
           ))}
         </div>
 
-        {/* Rocket Animation */}
-        <div className="relative z-10">
-          {/* Rocket Container */}
-          <div className="rocket-container">
-            <div className="text-9xl animate-rocket-fly">
-              🚀
+        {/* Hexagon Pattern Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="hexagon-pattern"></div>
+        </div>
+
+        {/* Main Content */}
+        <div className="relative z-10 text-center">
+          {/* Animated Logo/Icon */}
+          <div className="mb-8 relative">
+            <div className="inline-block relative">
+              {/* Pulsing Rings */}
+              <div className="absolute inset-0 animate-ping-slow">
+                <div className="w-40 h-40 border-4 border-blue-500/30 rounded-full"></div>
+              </div>
+              <div className="absolute inset-0 animate-ping-slower" style={{ animationDelay: '0.5s' }}>
+                <div className="w-40 h-40 border-4 border-purple-500/30 rounded-full"></div>
+              </div>
+              
+              {/* Center Hexagon */}
+              <div className="relative w-40 h-40 flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-2xl rotate-45 animate-spin-slow shadow-2xl shadow-blue-500/50"></div>
+                <div className="absolute inset-2 bg-gray-900 rounded-2xl rotate-45"></div>
+                <div className="relative z-10 text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text animate-pulse">
+                  XH
+                </div>
+              </div>
             </div>
-            {/* Rocket Trail */}
-            <div className="rocket-trail"></div>
           </div>
 
           {/* Loading Text */}
-          <div className="text-center mt-12 animate-fade-in-up">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text mb-4 animate-pulse">
-              Fabrilio Portfolio
+          <div className="animate-fade-in-up">
+            <h2 className="text-5xl md:text-6xl font-bold mb-4 animate-gradient-text">
+              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 text-transparent bg-clip-text bg-300% animate-gradient-flow">
+                XBOY HEX
+              </span>
             </h2>
-            <div className="flex items-center justify-center gap-2">
-              <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-              <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              <div className="w-3 h-3 bg-pink-500 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+            <p className="text-xl text-gray-300 mb-6 animate-pulse">Portfolio Experience</p>
+            
+            {/* Loading Bar */}
+            <div className="max-w-xs mx-auto mb-4">
+              <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
+                <div className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-loading-bar rounded-full"></div>
+              </div>
             </div>
-            <p className="text-gray-400 text-sm mt-4 animate-pulse">Launching...</p>
+            
+            {/* Loading Dots */}
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce shadow-lg shadow-blue-500/50" style={{ animationDelay: '0s' }}></div>
+              <div className="w-3 h-3 bg-purple-500 rounded-full animate-bounce shadow-lg shadow-purple-500/50" style={{ animationDelay: '0.2s' }}></div>
+              <div className="w-3 h-3 bg-pink-500 rounded-full animate-bounce shadow-lg shadow-pink-500/50" style={{ animationDelay: '0.4s' }}></div>
+            </div>
+            
+            <p className="text-gray-500 text-sm mt-4 animate-pulse">Initializing amazing experience...</p>
           </div>
         </div>
 
@@ -342,13 +397,56 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100">
+    <div className="min-h-screen bg-gray-900 text-gray-100 relative">
+      {/* Global Falling Stars Animation - Visible on entire page */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {/* Falling Stars Animation */}
+        {[...Array(15)].map((_, i) => (
+          <div
+            key={`falling-star-${i}`}
+            className="falling-star"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 2}s`
+            }}
+          >
+            <svg className="star-svg" viewBox="0 0 51 48" fill="currentColor">
+              <path d="M25.5 0L31.5532 17.9032L50.2901 18.1803L35.2398 29.6168L40.7901 47.8197L25.5 36.6L10.2099 47.8197L15.7602 29.6168L0.709896 18.1803L19.4468 17.9032L25.5 0Z"/>
+            </svg>
+          </div>
+        ))}
+        
+        {/* Shooting Stars */}
+        {[...Array(5)].map((_, i) => (
+          <div
+            key={`shooting-star-${i}`}
+            className="shooting-star"
+            style={{
+              top: `${Math.random() * 50}%`,
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 8 + i * 3}s`
+            }}
+          >
+            <svg className="star-svg-small" viewBox="0 0 51 48" fill="currentColor">
+              <path d="M25.5 0L31.5532 17.9032L50.2901 18.1803L35.2398 29.6168L40.7901 47.8197L25.5 36.6L10.2099 47.8197L15.7602 29.6168L0.709896 18.1803L19.4468 17.9032L25.5 0Z"/>
+            </svg>
+            <div className="shooting-star-trail"></div>
+          </div>
+        ))}
+      </div>
+
       {/* Navigation */}
-      <nav className="fixed w-full bg-gray-900/95 backdrop-blur-sm z-50 border-b border-gray-800">
+      <nav className="fixed w-full bg-gray-900/80 backdrop-blur-xl z-50 border-b border-gray-800/50 shadow-lg shadow-blue-500/5">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            <a href="#home" className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 text-transparent bg-clip-text glow">
-              Fabrilio
+            <a href="#home" className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-300% animate-gradient-flow text-transparent bg-clip-text glow hover:scale-105 transition-transform">
+              <span className="flex items-center gap-2">
+                <span className="w-8 h-8 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-purple-500/50 animate-pulse">
+                  XH
+                </span>
+                XBOY HEX
+              </span>
             </a>
             
             {/* Mobile menu button & theme toggle */}
@@ -422,45 +520,106 @@ function App() {
 
       {/* Hero Section */}
       <header id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden pt-16">
-        <div className="hero-bg" />
-        <div className="container mx-auto px-4 z-10">
-          <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 text-transparent bg-clip-text glow animate-fade-in">
-              Fabrilio
-            </h1>
-            <div className="text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 min-h-[2rem] font-mono px-4">
-              <span className="typing-cursor">{typedText}</span>
-              <span className="animate-blink">|</span>
+        {/* Enhanced Animated Background */}
+        <div className="absolute inset-0">
+          {/* Gradient Background */}
+          <div className="hero-bg-enhanced" />
+          
+          {/* Floating Particles */}
+          {[...Array(30)].map((_, i) => (
+            <div
+              key={`particle-${i}`}
+              className="absolute w-2 h-2 bg-blue-500/30 rounded-full animate-float"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${10 + Math.random() * 10}s`
+              }}
+            />
+          ))}
+          
+          {/* Grid Pattern */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          
+          {/* Gradient Orbs */}
+          <div className="absolute top-20 left-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+          <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
+        </div>
+        
+        <div className="container mx-auto px-4 z-10 relative">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full mb-8 backdrop-blur-sm animate-fade-in">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              <span className="text-sm text-blue-300">Available for projects</span>
             </div>
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
+            
+            {/* Main Title with Enhanced Animation */}
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-black mb-6 relative">
+              <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-300% animate-gradient-flow text-transparent bg-clip-text drop-shadow-2xl">
+                XBOY HEX
+              </span>
+              {/* Glowing underline effect */}
+              <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent animate-pulse"></div>
+            </h1>
+            
+            {/* Typing Effect */}
+            <div className="text-xl md:text-2xl lg:text-3xl text-gray-300 mb-8 min-h-[3rem] font-mono px-4">
+              <span className="typing-cursor bg-gradient-to-r from-blue-400 to-purple-400 text-transparent bg-clip-text">{typedText}</span>
+              <span className="animate-blink text-purple-400">|</span>
+            </div>
+            
+            {/* Language Tags dengan Hover Effect */}
+            <div className="flex flex-wrap justify-center gap-3 mb-12">
               {languages.map((lang, index) => (
                 <span
                   key={lang}
-                  className="language-tag px-5 py-2.5"
-                  style={{ animationDelay: `${index * 0.2}s` }}
+                  className="language-tag-enhanced group px-5 py-2.5 cursor-pointer"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  {lang}
+                  <span className="relative z-10">{lang}</span>
+                  <span className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 rounded-full transition-opacity duration-300 blur-sm"></span>
                 </span>
               ))}
             </div>
-            <div className="flex justify-center gap-6 mb-8">
-              <a href="https://github.com/BvspSite" target="_blank" rel="noopener noreferrer" className="social-icon text-gray-400 hover:text-blue-400 transition-all transform hover:scale-125 hover:-translate-y-1">
-                <Github size={32} />
+            {/* Enhanced Social Icons */}
+            <div className="flex justify-center gap-4 mb-10">
+              <a href="https://github.com/BvspSite" target="_blank" rel="noopener noreferrer" 
+                className="social-icon-enhanced group relative p-4 bg-gray-800/50 hover:bg-gray-800 rounded-xl border border-gray-700/50 hover:border-blue-500/50 backdrop-blur-sm transition-all transform hover:scale-110 hover:-translate-y-2">
+                <Github className="w-6 h-6 text-gray-400 group-hover:text-blue-400 transition-colors relative z-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 to-blue-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
-              <a href="https://www.instagram.com/pabrilll_?igsh=MWtzdzF4ZXppdTcyOA==" target="_blank" rel="noopener noreferrer" className="social-icon text-gray-400 hover:text-pink-400 transition-all transform hover:scale-125 hover:-translate-y-1">
-                <Instagram size={32} />
+              <a href="https://www.instagram.com/pabrilll_?igsh=MWtzdzF4ZXppdTcyOA==" target="_blank" rel="noopener noreferrer" 
+                className="social-icon-enhanced group relative p-4 bg-gray-800/50 hover:bg-gray-800 rounded-xl border border-gray-700/50 hover:border-pink-500/50 backdrop-blur-sm transition-all transform hover:scale-110 hover:-translate-y-2">
+                <Instagram className="w-6 h-6 text-gray-400 group-hover:text-pink-400 transition-colors relative z-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500/0 to-pink-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
-              <a href="mailto:****@gmail.com" className="social-icon text-gray-400 hover:text-purple-400 transition-all transform hover:scale-125 hover:-translate-y-1">
-                <Mail size={32} />
+              <a href="mailto:****@gmail.com" 
+                className="social-icon-enhanced group relative p-4 bg-gray-800/50 hover:bg-gray-800 rounded-xl border border-gray-700/50 hover:border-purple-500/50 backdrop-blur-sm transition-all transform hover:scale-110 hover:-translate-y-2">
+                <Mail className="w-6 h-6 text-gray-400 group-hover:text-purple-400 transition-colors relative z-10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
               </a>
             </div>
-            <a
-              href="#"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-blue-500/50"
-            >
-              <Download size={20} />
-              Download CV
-            </a>
+            
+            {/* Enhanced CTA Buttons */}
+            <div className="flex flex-wrap justify-center gap-4">
+              <a
+                href="#"
+                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 overflow-hidden"
+              >
+                <span className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <Download className="w-5 h-5 relative z-10 group-hover:animate-bounce" />
+                <span className="relative z-10">Download CV</span>
+              </a>
+              <a
+                href="#contact"
+                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gray-800/50 hover:bg-gray-800 text-white rounded-xl font-semibold border border-gray-700/50 hover:border-purple-500/50 backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
+              >
+                <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                <span>Contact Me</span>
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -697,7 +856,7 @@ function App() {
                 <div>
                   <h3 className="text-2xl font-bold text-white mb-2">Hai, Perkenalkan Saya</h3>
                   <p className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-400 text-transparent bg-clip-text">
-                    FABRILIO 
+                    XBOY HEX
                   </p>
                 </div>
               </div>
@@ -1021,7 +1180,7 @@ function App() {
 
       {/* Footer */}
       <footer className="py-8 text-center text-gray-400">
-        <p>© {new Date().getFullYear()} Pabril. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} XBOY HEX. All rights reserved.</p>
       </footer>
 
       {/* Back to Top Button */}

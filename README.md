@@ -1,8 +1,8 @@
 Ini README-nya, bisa langsung copy-paste ke file `README.md` di repo GitHub kamu:  
 
-# Fabrilio - Portfolio Website
+# XBOY HEX - Portfolio Website
 
-Fabrilio adalah proyek website portfolio yang dikembangkan menggunakan **Vite + React + TypeScript**, serta didukung oleh **Tailwind CSS** untuk styling.
+XBOY HEX adalah proyek website portfolio yang dikembangkan menggunakan **Vite + React + TypeScript**, serta didukung oleh **Tailwind CSS** untuk styling.
 
 ## 🔧 Langkah-langkah Pembuatan
 
@@ -49,7 +49,7 @@ npm run dev
 
   export default defineConfig({
     plugins: [react()],
-    base: "/Fabrilio/",
+    base: "./",
   });
 
 - Build proyek:
