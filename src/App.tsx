@@ -1,7 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Github, Instagram, Mail, Code2, Database, Palette, ExternalLink, Menu, X, Download, Award, GraduationCap, Calendar, Send, Sun, Moon, Sparkles, ArrowUp, Briefcase, TrendingUp } from 'lucide-react';
 import { useTheme } from './ThemeContext';
 import { ThemeCustomizer } from './ThemeCustomizer';
+import { SearchBar } from './components/SearchBar';
+import { CursorEffect } from './components/CursorEffect';
+import { MouseTrail } from './components/MouseTrail';
 
 function App() {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -14,6 +17,8 @@ function App() {
   const [formErrors, setFormErrors] = useState<{name?: string; email?: string; message?: string}>({});
   const [formStatus, setFormStatus] = useState<'idle' | 'error' | 'success' | 'sending'>('idle');
   const [showFormFeedback, setShowFormFeedback] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const parallaxRef = useRef<HTMLDivElement>(null);
 
   // Cinematic loading animation
   useEffect(() => {
@@ -116,7 +121,7 @@ function App() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Add mouse move effect for project cards
+  // Add mouse move effect for project cards with 3D tilt
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const cards = document.querySelectorAll('.project-card');
@@ -124,14 +129,109 @@ function App() {
         const rect = card.getBoundingClientRect();
         const x = ((e.clientX - rect.left) / rect.width) * 100;
         const y = ((e.clientY - rect.top) / rect.height) * 100;
+        const tiltX = ((e.clientY - rect.top) / rect.height - 0.5) * 10;
+        const tiltY = ((rect.left + rect.width / 2 - e.clientX) / rect.width) * 10;
+        
         (card as HTMLElement).style.setProperty('--mouse-x', `${x}%`);
         (card as HTMLElement).style.setProperty('--mouse-y', `${y}%`);
+        (card as HTMLElement).style.setProperty('--tilt-x', `${tiltX}deg`);
+        (card as HTMLElement).style.setProperty('--tilt-y', `${tiltY}deg`);
       });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  // Parallax scrolling effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (parallaxRef.current) {
+        const scrolled = window.pageYOffset;
+        parallaxRef.current.style.transform = `translateY(${scrolled * 0.5}px)`;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Magnetic button effect
+  useEffect(() => {
+    const magneticButtons = document.querySelectorAll('.magnetic-button');
+    const handlers: Array<() => void> = [];
+    
+    magneticButtons.forEach((button) => {
+      const handleMouseMove = (e: MouseEvent) => {
+        const rect = button.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        (button as HTMLElement).style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+      };
+
+      const handleMouseLeave = () => {
+        (button as HTMLElement).style.transform = 'translate(0, 0)';
+      };
+
+      button.addEventListener('mousemove', handleMouseMove as EventListener);
+      button.addEventListener('mouseleave', handleMouseLeave);
+      
+      handlers.push(() => {
+        button.removeEventListener('mousemove', handleMouseMove as EventListener);
+        button.removeEventListener('mouseleave', handleMouseLeave);
+      });
+    });
+    
+    return () => {
+      handlers.forEach(cleanup => cleanup());
+    };
+  }, []);
+
+  // Close mobile menu on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isNavOpen) {
+        setIsNavOpen(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isNavOpen]);
+
+
+  // Touch gestures for mobile
+  useEffect(() => {
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartX = e.changedTouches[0].screenX;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    };
+
+    const handleSwipe = () => {
+      if (touchEndX < touchStartX - 50 && isNavOpen) {
+        setIsNavOpen(false);
+      }
+      if (touchEndX > touchStartX + 50 && !isNavOpen) {
+        setIsNavOpen(true);
+      }
+    };
+
+    document.addEventListener('touchstart', handleTouchStart);
+    document.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [isNavOpen]);
 
   const projects = [
     {
@@ -398,6 +498,28 @@ function App() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100 relative">
+      {/* Cursor Effects */}
+      <CursorEffect />
+      <MouseTrail />
+      
+      {/* Skip to Content Link */}
+      <a 
+        href="#home" 
+        className="skip-to-content"
+        aria-label="Skip to main content"
+      >
+        Skip to Content
+      </a>
+
+      {/* Search Bar */}
+      {showSearch && (
+        <SearchBar 
+          projects={projects}
+          skills={skills}
+          onClose={() => setShowSearch(false)}
+        />
+      )}
+
       {/* Global Falling Stars Animation - Visible on entire page */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Falling Stars Animation */}
@@ -437,10 +559,18 @@ function App() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed w-full bg-gray-900/80 backdrop-blur-xl z-50 border-b border-gray-800/50 shadow-lg shadow-blue-500/5">
+      <nav 
+        className="fixed w-full bg-gray-900/80 backdrop-blur-xl z-50 border-b border-gray-800/50 shadow-lg shadow-blue-500/5"
+        role="navigation"
+        aria-label="Main navigation"
+      >
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center h-16">
-            <a href="#home" className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-300% animate-gradient-flow text-transparent bg-clip-text glow hover:scale-105 transition-transform">
+            <a 
+              href="#home" 
+              className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-300% animate-gradient-flow text-transparent bg-clip-text glow hover:scale-105 transition-transform"
+              aria-label="XBOY HEX - Home"
+            >
               <span className="flex items-center gap-2">
                 <span className="w-8 h-8 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-purple-500/50 animate-pulse">
                   XH
@@ -453,8 +583,9 @@ function App() {
             <div className="flex items-center gap-2 md:hidden">
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all"
-                aria-label="Toggle theme"
+                className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all ripple-button"
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : theme === 'light' ? 'custom' : 'dark'} theme`}
+                aria-pressed={theme === 'dark'}
               >
                 {theme === 'dark' ? (
                   <Sun className="w-5 h-5 text-yellow-400" />
@@ -464,18 +595,27 @@ function App() {
                   <Sparkles className="w-5 h-5 text-purple-400" />
                 )}
               </button>
-              <button onClick={() => setIsNavOpen(!isNavOpen)}>
-              {isNavOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+              <button 
+                onClick={() => setIsNavOpen(!isNavOpen)}
+                aria-label={isNavOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isNavOpen}
+                className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all"
+              >
+                {isNavOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6">
+              {/* Search Button */}
+              <SearchBar projects={projects} skills={skills} onClose={() => setShowSearch(false)} />
+
               {['Home', 'Skills', 'Projects', 'About', 'Education', 'Contact'].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
                   className={`nav-link ${activeSection === item.toLowerCase() ? 'text-blue-400' : 'text-gray-300'}`}
+                  aria-current={activeSection === item.toLowerCase() ? 'page' : undefined}
                 >
                   {item}
                 </a>
@@ -484,8 +624,9 @@ function App() {
               {/* Theme Toggle Button */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all duration-300 group relative overflow-hidden"
-                aria-label="Toggle theme"
+                className="p-2 rounded-lg bg-gray-800/50 hover:bg-gray-700 transition-all duration-300 group relative overflow-hidden ripple-button magnetic-button"
+                aria-label={`Switch to ${theme === 'dark' ? 'light' : theme === 'light' ? 'custom' : 'dark'} theme`}
+                aria-pressed={theme === 'dark'}
               >
                 <div className="relative z-10">
                   {theme === 'dark' ? (
@@ -502,13 +643,18 @@ function App() {
 
           {/* Mobile Navigation */}
           {isNavOpen && (
-            <div className="md:hidden py-4">
+            <div 
+              className={`md:hidden py-4 mobile-menu-enter-active ${isNavOpen ? 'mobile-menu-enter-active' : ''}`}
+              role="menu"
+              aria-label="Mobile navigation menu"
+            >
               {['Home', 'Skills', 'Projects', 'About', 'Education', 'Contact'].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="block py-2 text-gray-300 hover:text-white"
+                  className="block py-2 text-gray-300 hover:text-white transition-colors ripple-button"
                   onClick={() => setIsNavOpen(false)}
+                  role="menuitem"
                 >
                   {item}
                 </a>
@@ -606,7 +752,7 @@ function App() {
             <div className="flex flex-wrap justify-center gap-4">
               <a
                 href="#"
-                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 overflow-hidden"
+                className="ripple-button magnetic-button group relative inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl shadow-purple-500/30 hover:shadow-purple-500/50 overflow-hidden"
               >
                 <span className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                 <Download className="w-5 h-5 relative z-10 group-hover:animate-bounce" />
@@ -614,7 +760,7 @@ function App() {
               </a>
               <a
                 href="#contact"
-                className="group relative inline-flex items-center gap-2 px-8 py-4 bg-gray-800/50 hover:bg-gray-800 text-white rounded-xl font-semibold border border-gray-700/50 hover:border-purple-500/50 backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
+                className="ripple-button magnetic-button group relative inline-flex items-center gap-2 px-8 py-4 bg-gray-800/50 hover:bg-gray-800 text-white rounded-xl font-semibold border border-gray-700/50 hover:border-purple-500/50 backdrop-blur-sm transition-all duration-300 transform hover:scale-105"
               >
                 <Mail className="w-5 h-5 group-hover:rotate-12 transition-transform" />
                 <span>Contact Me</span>
@@ -766,7 +912,7 @@ function App() {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {projects.map((project, index) => (
-              <div key={index} className="project-card group transform hover:scale-[1.02] transition-all duration-300">
+              <div key={index} className="project-card particle-card tilt-3d hover-lift stagger-item group transform hover:scale-[1.02] transition-all duration-300">
                 <div className="p-6">
                   {/* Project Header */}
                   <div className="flex items-start justify-between mb-4">
